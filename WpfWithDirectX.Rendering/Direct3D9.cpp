@@ -14,6 +14,7 @@ D3DPRESENT_PARAMETERS presentParameters;
 LPDIRECT3D9 d3dInterface;
 LPDIRECT3DDEVICE9 device;
 LPDIRECT3DVERTEXBUFFER9 vertexBuffer;
+D3DXMATRIX world;
 D3DXMATRIX projection;
 
 void InitializeGraphics();
@@ -43,6 +44,9 @@ void InitializeDirect3D9(HWND windowHandle)
 
     device->SetRenderState(D3DRS_LIGHTING, false);
 
+    D3DXMatrixIdentity(&world);
+    device->SetTransform(D3DTS_WORLD, &world);
+
     D3DXMatrixIdentity(&projection);
     D3DXMatrixPerspectiveFovLH(
         &projection,
@@ -58,10 +62,6 @@ void RenderDirect3D9()
     device->Clear(0, NULL, D3DCLEAR_TARGET, D3DCOLOR_XRGB(0, 0, 0), 1.0f, 0);
     device->BeginScene();
     device->SetFVF(CUSTOMFVF);
-
-    D3DXMATRIX world;
-    D3DXMatrixIdentity(&world);
-    device->SetTransform(D3DTS_WORLD, &world);
 
     D3DXMATRIX view;
     D3DXMatrixIdentity(&view);
@@ -80,6 +80,12 @@ void RenderDirect3D9()
     device->DrawPrimitive(D3DPT_TRIANGLELIST, 0, 1);
     device->EndScene();
     device->Present(NULL, NULL, NULL, NULL);
+}
+
+void SetTriangleRotation(float value)
+{   
+    D3DXMatrixRotationY(&world, D3DXToRadian(value));
+    device->SetTransform(D3DTS_WORLD, &world);
 }
 
 void ResizeDirect3D9Viewport(UINT width, UINT height)
