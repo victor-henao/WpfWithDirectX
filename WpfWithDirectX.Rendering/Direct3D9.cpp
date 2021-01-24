@@ -1,11 +1,12 @@
 #include "pch.h"
 #include "Direct3D9.h"
+#include <d3dx9.h>
 
-#define CUSTOMFVF (D3DFVF_XYZRHW | D3DFVF_DIFFUSE)
+#define CUSTOMFVF (D3DFVF_XYZ | D3DFVF_DIFFUSE)
 
 struct CustomVertex
 {
-    float x, y, z, rhw;
+    float x, y, z;
     DWORD color;
 };
 
@@ -13,6 +14,7 @@ D3DPRESENT_PARAMETERS presentParameters;
 LPDIRECT3D9 d3dInterface;
 LPDIRECT3DDEVICE9 device;
 LPDIRECT3DVERTEXBUFFER9 vertexBuffer;
+D3DXMATRIX projection;
 
 void InitializeGraphics();
 
@@ -28,7 +30,8 @@ void InitializeDirect3D9(HWND windowHandle)
     presentParameters.BackBufferWidth = 800;
     presentParameters.BackBufferHeight = 450;
 
-    d3dInterface->CreateDevice(D3DADAPTER_DEFAULT,
+    d3dInterface->CreateDevice(
+        D3DADAPTER_DEFAULT,
         D3DDEVTYPE_HAL,
         windowHandle,
         D3DCREATE_SOFTWARE_VERTEXPROCESSING,
@@ -37,6 +40,17 @@ void InitializeDirect3D9(HWND windowHandle)
     );
 
     InitializeGraphics();
+
+    device->SetRenderState(D3DRS_LIGHTING, false);
+
+    D3DXMatrixIdentity(&projection);
+    D3DXMatrixPerspectiveFovLH(
+        &projection,
+        D3DXToRadian(45),
+        (FLOAT)800 / (FLOAT)450,
+        0.1f,
+        100.0f
+    );
 }
 
 void RenderDirect3D9()
@@ -44,6 +58,24 @@ void RenderDirect3D9()
     device->Clear(0, NULL, D3DCLEAR_TARGET, D3DCOLOR_XRGB(0, 0, 0), 1.0f, 0);
     device->BeginScene();
     device->SetFVF(CUSTOMFVF);
+
+    D3DXMATRIX world;
+    D3DXMatrixIdentity(&world);
+    device->SetTransform(D3DTS_WORLD, &world);
+
+    D3DXMATRIX view;
+    D3DXMatrixIdentity(&view);
+    D3DXVECTOR3 cameraPosition(0.0f, 0.0f, 10.0f);
+    D3DXVECTOR3 lookAt(0.0f, 0.0f, 0.0f);
+    D3DXVECTOR3 up(0.0f, 1.0f, 0.0f);
+    D3DXMatrixLookAtLH(
+        &view,
+        &cameraPosition,
+        &lookAt,
+        &up
+    );
+    device->SetTransform(D3DTS_VIEW, &view);
+
     device->SetStreamSource(0, vertexBuffer, 0, sizeof(CustomVertex));
     device->DrawPrimitive(D3DPT_TRIANGLELIST, 0, 1);
     device->EndScene();
@@ -55,6 +87,17 @@ void ResizeDirect3D9Viewport(UINT width, UINT height)
     presentParameters.BackBufferWidth = width;
     presentParameters.BackBufferHeight = height;
     device->Reset(&presentParameters);
+    device->SetRenderState(D3DRS_LIGHTING, false);
+
+    D3DXMatrixIdentity(&projection);
+    D3DXMatrixPerspectiveFovLH(
+        &projection,
+        D3DXToRadian(45),
+        (FLOAT)width / (FLOAT)height,
+        0.1f,
+        100.0f
+    );
+    device->SetTransform(D3DTS_PROJECTION, &projection);
 }
 
 void CleanDirect3D9()
@@ -68,9 +111,9 @@ void InitializeGraphics()
 {
     CustomVertex vertices[] =
     {
-        { 400.0f, 112.5f, 0.5f, 1.0f, D3DCOLOR_XRGB(255, 0, 0), },
-        { 600.0f, 337.5f, 0.5f, 1.0f, D3DCOLOR_XRGB(0, 255, 0), },
-        { 200.0f, 337.5f, 0.5f, 1.0f, D3DCOLOR_XRGB(0, 0, 255), }
+        { 0.0, 1.0f, 0.0f, D3DCOLOR_XRGB(255, 0, 0) },
+        { -1.0f, -1.0f, 0.0f, D3DCOLOR_XRGB(0, 255, 0) },
+        { 1.0f, -1.0f, 0.0f, D3DCOLOR_XRGB(0, 0, 255) }
     };
 
     device->CreateVertexBuffer(
