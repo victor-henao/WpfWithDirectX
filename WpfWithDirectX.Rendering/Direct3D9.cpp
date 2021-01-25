@@ -14,6 +14,7 @@ D3DPRESENT_PARAMETERS presentParameters;
 LPDIRECT3D9 d3dInterface;
 LPDIRECT3DDEVICE9 device;
 LPDIRECT3DVERTEXBUFFER9 vertexBuffer;
+D3DXMATRIX view;
 D3DXMATRIX world;
 D3DXMATRIX projection;
 
@@ -43,10 +44,19 @@ void InitializeDirect3D9(HWND windowHandle)
     InitializeGraphics();
 
     device->SetRenderState(D3DRS_LIGHTING, false);
+    device->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
 
     D3DXMatrixIdentity(&world);
-    device->SetTransform(D3DTS_WORLD, &world);
-
+    D3DXMatrixIdentity(&view);
+    D3DXVECTOR3 cameraPosition(0.0f, 0.0f, 5.0f);
+    D3DXVECTOR3 lookAt(0.0f, 0.0f, 0.0f);
+    D3DXVECTOR3 up(0.0f, 1.0f, 0.0f);
+    D3DXMatrixLookAtLH(
+        &view,
+        &cameraPosition,
+        &lookAt,
+        &up
+    );
     D3DXMatrixIdentity(&projection);
     D3DXMatrixPerspectiveFovLH(
         &projection,
@@ -62,18 +72,8 @@ void RenderDirect3D9()
     device->Clear(0, NULL, D3DCLEAR_TARGET, D3DCOLOR_XRGB(0, 0, 0), 1.0f, 0);
     device->BeginScene();
     device->SetFVF(CUSTOMFVF);
-
-    D3DXMATRIX view;
-    D3DXMatrixIdentity(&view);
-    D3DXVECTOR3 cameraPosition(0.0f, 0.0f, 10.0f);
-    D3DXVECTOR3 lookAt(0.0f, 0.0f, 0.0f);
-    D3DXVECTOR3 up(0.0f, 1.0f, 0.0f);
-    D3DXMatrixLookAtLH(
-        &view,
-        &cameraPosition,
-        &lookAt,
-        &up
-    );
+    
+    device->SetTransform(D3DTS_WORLD, &world);
     device->SetTransform(D3DTS_VIEW, &view);
 
     device->SetStreamSource(0, vertexBuffer, 0, sizeof(CustomVertex));
@@ -92,8 +92,10 @@ void ResizeDirect3D9Viewport(UINT width, UINT height)
 {
     presentParameters.BackBufferWidth = width;
     presentParameters.BackBufferHeight = height;
+
     device->Reset(&presentParameters);
     device->SetRenderState(D3DRS_LIGHTING, false);
+    device->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
 
     D3DXMatrixIdentity(&projection);
     D3DXMatrixPerspectiveFovLH(
