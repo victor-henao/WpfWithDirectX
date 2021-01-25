@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
+using System.Windows.Threading;
 
 namespace WpfWithDirectX
 {
@@ -10,6 +12,17 @@ namespace WpfWithDirectX
         public MainWindow()
         {
             InitializeComponent();
+            var timer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromSeconds(1 / 60)
+            };
+            timer.Tick += Timer_Tick;
+            timer.Start();
+        }
+
+        private void Timer_Tick(object sender, EventArgs e)
+        {
+            //throw new NotImplementedException();
         }
 
         private void PositionSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)

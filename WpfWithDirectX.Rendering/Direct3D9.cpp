@@ -24,13 +24,13 @@ D3DXMATRIX world;
 D3DXMATRIX view;
 D3DXMATRIX projection;
 
-float position;
-float rotation;
-float scale;
+float position = 0;
+float rotation = 0;
+float scale = 1;
 
 void InitializeGraphics();
 
-void InitializeDirect3D9(HWND windowHandle)
+void InitializeDirect3D9(HWND windowHandle, UINT width, UINT height)
 {
     d3dInterface = Direct3DCreate9(D3D_SDK_VERSION);
 
@@ -39,8 +39,8 @@ void InitializeDirect3D9(HWND windowHandle)
     presentParameters.SwapEffect = D3DSWAPEFFECT_DISCARD;
     presentParameters.hDeviceWindow = windowHandle;
     presentParameters.BackBufferFormat = D3DFMT_X8R8G8B8;
-    presentParameters.BackBufferWidth = 800;
-    presentParameters.BackBufferHeight = 450;
+    presentParameters.BackBufferWidth = width;
+    presentParameters.BackBufferHeight = height;
 
     d3dInterface->CreateDevice(
         D3DADAPTER_DEFAULT,
@@ -58,23 +58,9 @@ void InitializeDirect3D9(HWND windowHandle)
 
     D3DXMatrixIdentity(&world);
     D3DXMatrixIdentity(&view);
-    D3DXVECTOR3 cameraPosition(0.0f, 0.0f, -5.0f);
-    D3DXVECTOR3 lookAt(0.0f, 0.0f, 0.0f);
-    D3DXVECTOR3 up(0.0f, 1.0f, 0.0f);
-    D3DXMatrixLookAtLH(
-        &view,
-        &cameraPosition,
-        &lookAt,
-        &up
-    );
     D3DXMatrixIdentity(&projection);
-    D3DXMatrixPerspectiveFovLH(
-        &projection,
-        D3DXToRadian(90),
-        (FLOAT)800 / (FLOAT)450,
-        0.1f,
-        100.0f
-    );
+    float ratio = (float)width / height;
+    D3DXMatrixOrthoOffCenterLH(&projection, -ratio, ratio, -1.0f, 1.0f, -1.0f, 1.0f);
 }
 
 void RenderDirect3D9()
@@ -89,10 +75,11 @@ void RenderDirect3D9()
     D3DXMatrixTranslation(&translationMatrix, position, 0.0f, 0.0f);
     D3DXMatrixRotationY(&rotationMatrix, D3DXToRadian(rotation));
     D3DXMatrixScaling(&scaleMatrix, scale, scale, 1);
-    world = scaleMatrix * rotationMatrix * translationMatrix;
+    world = rotationMatrix * scaleMatrix * translationMatrix;
 
     device->SetTransform(D3DTS_WORLD, &world);
     device->SetTransform(D3DTS_VIEW, &view);
+    device->SetTransform(D3DTS_PROJECTION, &projection);
 
     device->SetStreamSource(0, vertexBuffer, 0, sizeof(CustomVertex));
     device->DrawPrimitive(D3DPT_TRIANGLEFAN, 0, TRIANGLE_COUNT);
@@ -125,13 +112,9 @@ void ResizeDirect3D9Viewport(UINT width, UINT height)
     device->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
 
     D3DXMatrixIdentity(&projection);
-    D3DXMatrixPerspectiveFovLH(
-        &projection,
-        D3DXToRadian(45),
-        (FLOAT)width / (FLOAT)height,
-        0.1f,
-        100.0f
-    );
+    float ratio = (float)width / height;
+    D3DXMatrixOrthoOffCenterLH(&projection, -ratio, ratio, -1.0f, 1.0f, -1.0f, 1.0f);
+
     device->SetTransform(D3DTS_PROJECTION, &projection);
 }
 
@@ -150,7 +133,7 @@ void InitializeGraphics()
     {
         vertices.push_back({ std::cosf(angle), std::sinf(angle), 0.0f, D3DCOLOR_XRGB(255, 255, 255) });
     }
-    vertices.push_back({ 1.0f, 0.0f, 0.0f, D3DCOLOR_XRGB(255, 255, 255) });
+    //vertices.push_back({ 1.0f, 0.0f, 0.0f, D3DCOLOR_XRGB(255, 255, 255) });
 
     device->CreateVertexBuffer(
         vertices.size() * sizeof(CustomVertex),

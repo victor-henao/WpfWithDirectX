@@ -6,7 +6,7 @@ namespace WpfWithDirectX
     static class NativeMethods
     {
         [DllImport("WpfWithDirectX.Rendering.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern void InitializeDirect3D9(IntPtr windowHandle);
+        public static extern void InitializeDirect3D9(IntPtr windowHandle, uint width, uint height);
 
         [DllImport("WpfWithDirectX.Rendering.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern void RenderDirect3D9();

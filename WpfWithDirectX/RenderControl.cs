@@ -13,7 +13,7 @@ namespace WpfWithDirectX
         protected override void CreateHandle()
         {
             base.CreateHandle();
-            NativeMethods.InitializeDirect3D9(Handle);
+            NativeMethods.InitializeDirect3D9(Handle, (uint)Size.Width, (uint)Size.Height);
         }
 
         protected override void OnResize(EventArgs e)

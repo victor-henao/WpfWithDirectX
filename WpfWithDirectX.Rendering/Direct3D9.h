@@ -4,7 +4,7 @@
 
 #define RENDERINGLIBRARY_EXPORTS __declspec(dllexport)
 
-extern "C" RENDERINGLIBRARY_EXPORTS void InitializeDirect3D9(HWND windowHandle);
+extern "C" RENDERINGLIBRARY_EXPORTS void InitializeDirect3D9(HWND windowHandle, UINT width, UINT height);
 
 extern "C" RENDERINGLIBRARY_EXPORTS void RenderDirect3D9();
 
