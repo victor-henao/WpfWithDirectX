@@ -1,6 +1,4 @@
-﻿using System;
-using System.Windows;
-using System.Windows.Threading;
+﻿using System.Windows;
 
 namespace WpfWithDirectX
 {
@@ -12,34 +10,27 @@ namespace WpfWithDirectX
         public MainWindow()
         {
             InitializeComponent();
-            var timer = new DispatcherTimer
-            {
-                Interval = TimeSpan.FromSeconds(1 / 60)
-            };
-            timer.Tick += Timer_Tick;
-            timer.Start();
-        }
 
-        private void Timer_Tick(object sender, EventArgs e)
-        {
-            //throw new NotImplementedException();
+            positionSlider.ValueChanged += PositionSlider_ValueChanged;
+            scaleSlider.ValueChanged += ScaleSlider_ValueChanged;
+            rotationSlider.ValueChanged += RotationSlider_ValueChanged;
         }
 
         private void PositionSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            NativeMethods.SetTrianglePosition((float)e.NewValue);
-            host.Child.Invalidate();
-        }
-
-        private void RotationSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            NativeMethods.SetTriangleRotation((float)e.NewValue);
+            NativeMethods.SetCirclePosition((float)e.NewValue);
             host.Child.Invalidate();
         }
 
         private void ScaleSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            NativeMethods.SetTriangleScale((float)e.NewValue);
+            NativeMethods.SetCircleScale((float)e.NewValue);
+            host.Child.Invalidate();
+        }
+
+        private void RotationSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            NativeMethods.SetCircleRotation((float)e.NewValue);
             host.Child.Invalidate();
         }
     }

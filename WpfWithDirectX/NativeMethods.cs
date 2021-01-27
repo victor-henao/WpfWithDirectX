@@ -12,13 +12,13 @@ namespace WpfWithDirectX
         public static extern void RenderDirect3D9();
 
         [DllImport("WpfWithDirectX.Rendering.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern void SetTrianglePosition(float value);
+        public static extern void SetCirclePosition(float value);
 
         [DllImport("WpfWithDirectX.Rendering.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern void SetTriangleRotation(float value);
+        public static extern void SetCircleScale(float value);
 
         [DllImport("WpfWithDirectX.Rendering.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern void SetTriangleScale(float value);
+        public static extern void SetCircleRotation(float value);
 
         [DllImport("WpfWithDirectX.Rendering.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern void ResizeDirect3D9Viewport(uint width, uint height);

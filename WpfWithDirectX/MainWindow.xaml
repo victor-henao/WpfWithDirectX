@@ -17,10 +17,10 @@
             </WindowsFormsHost.Child>
         </WindowsFormsHost>
         <TextBlock Grid.Column="1" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" Text="position" VerticalAlignment="Top"/>
-        <Slider Grid.Column="1" HorizontalAlignment="Stretch" Margin="10,31,10,0" VerticalAlignment="Top" Width="178" ValueChanged="PositionSlider_ValueChanged" Maximum="5" Minimum="-5"/>
-        <TextBlock Grid.Column="1" HorizontalAlignment="Left" Margin="10,54,0,0" TextWrapping="Wrap" Text="rotation" VerticalAlignment="Top"/>
-        <Slider Grid.Column="1" HorizontalAlignment="Stretch" Margin="10,75,10,0" VerticalAlignment="Top" Width="178" ValueChanged="RotationSlider_ValueChanged" Maximum="180" Minimum="-180"/>
-        <TextBlock Grid.Column="1" HorizontalAlignment="Left" Margin="10,98,0,0" TextWrapping="Wrap" Text="scale" VerticalAlignment="Top"/>
-        <Slider Grid.Column="1" HorizontalAlignment="Stretch" Margin="10,119,10,0" VerticalAlignment="Top" Width="178" ValueChanged="ScaleSlider_ValueChanged" Maximum="2" Minimum="1"/>
+        <Slider Name="positionSlider" Grid.Column="1" HorizontalAlignment="Stretch" Margin="10,31,10,0" VerticalAlignment="Top" Width="178" Maximum="5" Minimum="-5"/>
+        <TextBlock Grid.Column="1" HorizontalAlignment="Left" Margin="10,54,0,0" TextWrapping="Wrap" Text="scale" VerticalAlignment="Top"/>
+        <Slider Name="scaleSlider" Grid.Column="1" HorizontalAlignment="Stretch" Margin="10,75,10,0" VerticalAlignment="Top" Width="178" Maximum="2" Minimum="1"/>
+        <TextBlock Grid.Column="1" HorizontalAlignment="Left" Margin="10,98,0,0" TextWrapping="Wrap" Text="rotation" VerticalAlignment="Top"/>
+        <Slider Name="rotationSlider" Grid.Column="1" HorizontalAlignment="Stretch" Margin="10,119,10,0" VerticalAlignment="Top" Width="178" Maximum="180" Minimum="-180"/>
     </Grid>
 </Window>
