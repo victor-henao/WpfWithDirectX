@@ -18,9 +18,11 @@ struct CustomVertex
 D3DPRESENT_PARAMETERS presentParameters;
 LPDIRECT3D9 d3dInterface;
 LPDIRECT3DDEVICE9 device;
-LPDIRECT3DVERTEXBUFFER9 vertexBuffer;
+LPDIRECT3DVERTEXBUFFER9 vertexBuffer1;
+LPDIRECT3DVERTEXBUFFER9 vertexBuffer2;
 
-D3DXMATRIX world;
+D3DXMATRIX world1;
+D3DXMATRIX world2;
 D3DXMATRIX view;
 D3DXMATRIX projection;
 
@@ -56,8 +58,10 @@ void InitializeDirect3D9(HWND windowHandle, UINT width, UINT height)
     device->SetRenderState(D3DRS_LIGHTING, false);
     device->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
 
-    D3DXMatrixIdentity(&world);
+    D3DXMatrixIdentity(&world1);
+    D3DXMatrixIdentity(&world2);
     D3DXMatrixIdentity(&view);
+    D3DXMatrixScaling(&view, (float)1 / 16, (float)1 / 16, 1.0f);
     D3DXMatrixIdentity(&projection);
     float ratio = (float)width / height;
     D3DXMatrixOrthoOffCenterLH(&projection, -ratio, ratio, -1.0f, 1.0f, -1.0f, 1.0f);
@@ -65,24 +69,40 @@ void InitializeDirect3D9(HWND windowHandle, UINT width, UINT height)
 
 void RenderDirect3D9()
 {
-    device->Clear(0, NULL, D3DCLEAR_TARGET, D3DCOLOR_XRGB(0, 0, 0), 1.0f, 0);
+    device->Clear(0, NULL, D3DCLEAR_TARGET, D3DCOLOR_XRGB(240, 240, 240), 1.0f, 0);
     device->BeginScene();
     device->SetFVF(CUSTOMFVF);
     
-    D3DXMATRIX translationMatrix;
-    D3DXMATRIX rotationMatrix;
-    D3DXMATRIX scaleMatrix;
-    D3DXMatrixTranslation(&translationMatrix, position, 0.0f, 0.0f);
-    D3DXMatrixRotationY(&rotationMatrix, D3DXToRadian(rotation));
-    D3DXMatrixScaling(&scaleMatrix, scale, scale, 1);
-    world = rotationMatrix * scaleMatrix * translationMatrix;
+    D3DXMATRIX translationMatrix1;
+    D3DXMATRIX rotationMatrix1;
+    D3DXMATRIX scaleMatrix1;
+    D3DXMatrixTranslation(&translationMatrix1, position, 0.0f, 0.0f);
+    D3DXMatrixRotationY(&rotationMatrix1, D3DXToRadian(rotation));
+    D3DXMatrixScaling(&scaleMatrix1, scale, scale, 1);
+    world1 = rotationMatrix1 * scaleMatrix1 * translationMatrix1;
 
-    device->SetTransform(D3DTS_WORLD, &world);
+    device->SetTransform(D3DTS_WORLD, &world1);
     device->SetTransform(D3DTS_VIEW, &view);
     device->SetTransform(D3DTS_PROJECTION, &projection);
 
-    device->SetStreamSource(0, vertexBuffer, 0, sizeof(CustomVertex));
+    device->SetStreamSource(0, vertexBuffer1, 0, sizeof(CustomVertex));
     device->DrawPrimitive(D3DPT_TRIANGLEFAN, 0, TRIANGLE_COUNT);
+
+    D3DXMATRIX translationMatrix2;
+    D3DXMATRIX rotationMatrix2;
+    D3DXMATRIX scaleMatrix2;
+    D3DXMatrixTranslation(&translationMatrix2, 5.0f, 0.0f, 0.0f);
+    D3DXMatrixRotationY(&rotationMatrix2, D3DXToRadian(0));
+    D3DXMatrixScaling(&scaleMatrix2, 2, 2, 1);
+    world2 = rotationMatrix2 * scaleMatrix2 * translationMatrix2;
+
+    device->SetTransform(D3DTS_WORLD, &world2);
+    device->SetTransform(D3DTS_VIEW, &view);
+    device->SetTransform(D3DTS_PROJECTION, &projection);
+
+    device->SetStreamSource(0, vertexBuffer2, 0, sizeof(CustomVertex));
+    device->DrawPrimitive(D3DPT_TRIANGLEFAN, 0, TRIANGLE_COUNT);
+
     device->EndScene();
     device->Present(NULL, NULL, NULL, NULL);
 }
@@ -120,9 +140,10 @@ void ResizeDirect3D9Viewport(UINT width, UINT height)
 
 void CleanDirect3D9()
 {
-    vertexBuffer->Release();
+    vertexBuffer1->Release();
+    vertexBuffer2->Release();
     device->Release();
-    d3dInterface->Release(); 
+    d3dInterface->Release();
 }
 
 void InitializeGraphics()
@@ -133,19 +154,33 @@ void InitializeGraphics()
     {
         vertices.push_back({ std::cosf(angle), std::sinf(angle), 0.0f, D3DCOLOR_XRGB(255, 255, 255) });
     }
-    //vertices.push_back({ 1.0f, 0.0f, 0.0f, D3DCOLOR_XRGB(255, 255, 255) });
+    vertices.push_back({ 1.0f, 0.0f, 0.0f, D3DCOLOR_XRGB(255, 255, 255) });
 
     device->CreateVertexBuffer(
         vertices.size() * sizeof(CustomVertex),
         0,
         CUSTOMFVF,
         D3DPOOL_MANAGED,
-        &vertexBuffer,
+        &vertexBuffer1,
         NULL
     );
 
-    void* voidPointer;
-    vertexBuffer->Lock(0, 0, (void**)&voidPointer, 0);
-    memcpy(voidPointer, &vertices[0], vertices.size() * sizeof(CustomVertex));
-    vertexBuffer->Unlock();
+    device->CreateVertexBuffer(
+        vertices.size() * sizeof(CustomVertex),
+        0,
+        CUSTOMFVF,
+        D3DPOOL_MANAGED,
+        &vertexBuffer2,
+        NULL
+    );
+
+    void* bufferData1;
+    vertexBuffer1->Lock(0, 0, &bufferData1, 0);
+    memcpy(bufferData1, &vertices[0], vertices.size() * sizeof(CustomVertex));
+    vertexBuffer1->Unlock();
+
+    void* bufferData2;
+    vertexBuffer2->Lock(0, 0, &bufferData2, 0);
+    memcpy(bufferData2, &vertices[0], vertices.size() * sizeof(CustomVertex));
+    vertexBuffer2->Unlock();
 }
