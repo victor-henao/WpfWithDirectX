@@ -12,6 +12,9 @@ namespace WpfWithDirectX
         public static extern void RenderDirect3D9();
 
         [DllImport("WpfWithDirectX.Rendering.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void SetClearColor(byte r, byte g, byte b);
+
+        [DllImport("WpfWithDirectX.Rendering.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern void SetCirclePosition(float value);
 
         [DllImport("WpfWithDirectX.Rendering.dll", CallingConvention = CallingConvention.Cdecl)]

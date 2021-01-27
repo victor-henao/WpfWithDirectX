@@ -7,6 +7,10 @@
 #include <math.h>
 #include <cmath>
 
+UCHAR red;
+UCHAR green;
+UCHAR blue;
+
 #define CUSTOMFVF (D3DFVF_XYZ | D3DFVF_DIFFUSE)
 const UINT TRIANGLE_COUNT = 32;
 
@@ -59,7 +63,7 @@ void InitializeDirect3D9(HWND windowHandle, UINT width, UINT height)
 
 void RenderDirect3D9()
 {
-    device->Clear(0, NULL, D3DCLEAR_TARGET, D3DCOLOR_XRGB(240, 240, 240), 1.0f, 0);
+    device->Clear(0, NULL, D3DCLEAR_TARGET, D3DCOLOR_XRGB(red, green, blue), 1.0f, 0);
     device->BeginScene();
     device->SetFVF(CUSTOMFVF);
     
@@ -71,6 +75,13 @@ void RenderDirect3D9()
 
     device->EndScene();
     device->Present(NULL, NULL, NULL, NULL);
+}
+
+RENDERINGLIBRARY_EXPORTS void SetClearColor(UCHAR r, UCHAR g, UCHAR b)
+{
+    red = r;
+    green = g;
+    blue = b;
 }
 
 void SetCirclePosition(float value)

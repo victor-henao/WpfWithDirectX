@@ -22,5 +22,9 @@
         <Slider Name="scaleSlider" Grid.Column="1" HorizontalAlignment="Stretch" Margin="10,75,10,0" VerticalAlignment="Top" Width="178" Maximum="2" Minimum="1"/>
         <TextBlock Grid.Column="1" HorizontalAlignment="Left" Margin="10,98,0,0" TextWrapping="Wrap" Text="rotation" VerticalAlignment="Top"/>
         <Slider Name="rotationSlider" Grid.Column="1" HorizontalAlignment="Stretch" Margin="10,119,10,0" VerticalAlignment="Top" Width="178" Maximum="180" Minimum="-180"/>
+        <TextBlock Grid.Column="1" HorizontalAlignment="Left" Margin="10,142,0,0" TextWrapping="Wrap" Text="color" VerticalAlignment="Top"/>
+        <Slider Name="redSlider" Grid.Column="1" HorizontalAlignment="Left" Margin="10,163,0,0" VerticalAlignment="Top" Width="178" Maximum="255" Value="240"/>
+        <Slider Name="greenSlider" Grid.Column="1" HorizontalAlignment="Left" Margin="10,186,0,0" VerticalAlignment="Top" Width="178" Maximum="255" Value="240"/>
+        <Slider Name="blueSlider" Grid.Column="1" HorizontalAlignment="Left" Margin="10,209,0,0" VerticalAlignment="Top" Width="178" Maximum="255" Value="240"/>
     </Grid>
 </Window>
