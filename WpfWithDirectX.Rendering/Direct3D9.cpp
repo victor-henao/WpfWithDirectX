@@ -22,10 +22,6 @@ D3DXMATRIX projection;
 
 Circle* circle;
 
-float position = 0;
-float rotation = 0;
-float scale = 1;
-
 void InitializeGraphics();
 
 void InitializeDirect3D9(HWND windowHandle, UINT width, UINT height)
@@ -55,7 +51,7 @@ void InitializeDirect3D9(HWND windowHandle, UINT width, UINT height)
     device->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
 
     D3DXMatrixIdentity(&view);
-    D3DXMatrixScaling(&view, (float)1 / 16, (float)1 / 16, 1.0f);
+    D3DXMatrixScaling(&view, (float)1 / 8, (float)1 / 8, 1.0f);
     D3DXMatrixIdentity(&projection);
     float ratio = (float)width / height;
     D3DXMatrixOrthoOffCenterLH(&projection, -ratio, ratio, -1.0f, 1.0f, -1.0f, 1.0f);
@@ -77,7 +73,7 @@ void RenderDirect3D9()
     device->Present(NULL, NULL, NULL, NULL);
 }
 
-RENDERINGLIBRARY_EXPORTS void SetClearColor(UCHAR r, UCHAR g, UCHAR b)
+void SetClearColor(UCHAR r, UCHAR g, UCHAR b)
 {
     red = r;
     green = g;
